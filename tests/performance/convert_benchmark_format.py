@@ -42,6 +42,7 @@ def convert_to_custom_format(pytest_data: Dict[str, Any]) -> List[Dict[str, Any]
 
 
 def main():
+    """Entry point for command line conversion utility."""
     parser = argparse.ArgumentParser(
         description="Convert pytest-benchmark JSON to customSmallerIsBetter format"
     )

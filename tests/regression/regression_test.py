@@ -26,6 +26,7 @@ class Case(BaseModel):
 
 
 def load_test_cases():
+    """Load regression test cases from ``test_cases.json``."""
     with open(TEST_CASES_PATH) as test_cases_file:
         ta = TypeAdapter(List[Case])
         test_cases = ta.validate_json(test_cases_file.read())
@@ -37,6 +38,7 @@ TEST_CASES = load_test_cases()
 
 @pytest.mark.parametrize("test_case", TEST_CASES, ids=lambda x: x.simulation_name)
 def test_eval(test_case: Case, request):
+    """Run regression tests for a given simulation case."""
     exact = request.config.getoption("--exact")
     mpi_exec = request.config.getoption("--mpi-exec")
     mpi_opt = request.config.getoption("--mpi-opt")
@@ -53,6 +55,7 @@ def test_eval(test_case: Case, request):
 
 
 def run_test(simulation_dir, number_of_processes, config_file, files_to_compare, exact, mpi_exec, mpi_opt):
+    """Execute Quandary and compare its output against reference files."""
     os.chdir(simulation_dir)
 
     command = build_mpi_command(
@@ -75,12 +78,14 @@ def run_test(simulation_dir, number_of_processes, config_file, files_to_compare,
 
 
 def compare_files(file_name, output, expected, exact):
+    """Compare two output files using pandas DataFrame equality."""
     df_output = pd.read_csv(output, sep="\\s+", header=get_header(output))
     df_expected = pd.read_csv(expected, sep="\\s+", header=get_header(output))
     pd.testing.assert_frame_equal(df_output, df_expected, rtol=REL_TOL, atol=ABS_TOL, obj=file_name, check_exact=exact)
 
 
 def get_header(path):
+    """Return header row index if file starts with a comment."""
     with open(path, 'r') as file:
         first_line = file.readline().strip()
         return 0 if first_line.startswith('#') else None

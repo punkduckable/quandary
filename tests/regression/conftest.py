@@ -2,6 +2,7 @@
 
 
 def pytest_addoption(parser):
+    """Add regression specific command line options to pytest."""
     group = parser.getgroup("regression")
     group.addoption(
         "--exact",
