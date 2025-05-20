@@ -14,6 +14,7 @@ QUANDARY_PATH = os.path.join(TEST_PATH, "..", "..", "quandary")
 
 
 def pytest_benchmark_configure(config):
+    """Configure pytest-benchmark to ensure reproducible results."""
     config.option.benchmark_disable_gc = True
     config.option.benchmark_min_rounds = 1
 
@@ -25,6 +26,7 @@ class Case(BaseModel):
 
 
 def load_test_cases():
+    """Load performance test cases from ``test_cases.json``."""
     with open(TEST_CASES_PATH) as test_cases_file:
         ta = TypeAdapter(List[Case])
         test_cases = ta.validate_json(test_cases_file.read())
@@ -64,6 +66,7 @@ def run_quandary(command):
     ids=ids
 )
 def test_eval(benchmark, simulation_name, number_of_processes, request):
+    """Run a performance benchmark for a given test case."""
     mpi_exec = request.config.getoption("--mpi-exec")
     mpi_opt = request.config.getoption("--mpi-opt")
 

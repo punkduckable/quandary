@@ -388,6 +388,20 @@ class Quandary:
 
 
     def downsample_pulses(self, *, pt0=[], qt0=[]):
+        """Downsample piecewise constant controls to spline coefficients.
+
+        Parameters
+        ----------
+        pt0 : list
+            Real part of the control pulses for each oscillator in MHz.
+        qt0 : list
+            Imaginary part of the control pulses for each oscillator in MHz.
+
+        Returns
+        -------
+        numpy.ndarray
+            Vector of B-spline coefficients suitable for ``pcof0``.
+        """
         if self.spline_order == 0: #specifying (pt, qt) only makes sense for piecewise constant B-splines
             Nsys = len(self.Ne)
             self.nsplines = np.max([2,int(np.ceil(self.nsteps*self.dT/self.spline_knot_spacing + 1))])
@@ -1459,6 +1473,19 @@ default_batch_args = {batch_args_mapping["NAME"]          : "default",
                       batch_args_mapping["NTASKS"]        : 1}
 
 def assemble_batch_script(name, run_command, batch_args, exclusive=True):
+    """Create a simple SLURM batch script for running Quandary.
+
+    Parameters
+    ----------
+    name : str
+        Path of the output script.
+    run_command : str
+        Command that launches Quandary.
+    batch_args : dict
+        Mapping of SLURM argument names to values.
+    exclusive : bool, optional
+        If ``True`` add ``--exclusive`` to the script.  Default ``True``.
+    """
     outfile = open(name, 'w')
     outfile.write("#!/usr/bin/bash\n")
     for arg,value in batch_args.items():
@@ -1470,6 +1497,7 @@ def assemble_batch_script(name, run_command, batch_args, exclusive=True):
 
 
 def infidelity_(A,B):
-	dim = int(np.sqrt(A.size))
-	return 1.0 - np.abs(np.trace(A.conj().transpose() @ B))**2/dim**2
+        """Return the trace infidelity between matrices ``A`` and ``B``."""
+        dim = int(np.sqrt(A.size))
+        return 1.0 - np.abs(np.trace(A.conj().transpose() @ B))**2/dim**2
 

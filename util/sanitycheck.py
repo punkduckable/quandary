@@ -8,6 +8,18 @@ from numpy import *
 import math
 
 def getdata(filename):
+  """Read whitespace-separated numeric data from ``filename``.
+
+  Parameters
+  ----------
+  filename : str
+      Path to the file containing numeric values.
+
+  Returns
+  -------
+  list
+      List of lists containing the parsed floating point numbers.
+  """
 
   # open file for read only
   ufile=open(filename,'r')
@@ -29,11 +41,13 @@ def getdata(filename):
   print("Done. ", len(data), " lines.")
   return data 
 
+
 def parseline(line):
-    string    = line.split()  # split the string in that line by separator " "
+    """Split a whitespace separated line into floating point numbers."""
+    string = line.split()
     floatlist = []
     for data in string:
-        floatlist.append(float(data))  #parse the number in that line
+        floatlist.append(float(data))  # parse the number in that line
 
     return floatlist 
 
